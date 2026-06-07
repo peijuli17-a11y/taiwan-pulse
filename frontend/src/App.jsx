@@ -19,7 +19,7 @@ ChartJS.register(
   BarElement, ArcElement, Title, Tooltip, Legend
 );
 
-const API = "http://127.0.0.1:8000";
+const API = "https://taiwan-pulse.onrender.com";
 
 function KpiCard({ title, value, unit, sub }) {
   return (
