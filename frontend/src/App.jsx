@@ -54,11 +54,9 @@ export default function App() {
   const [gdp, setGdp] = useState([]);
   const [energy, setEnergy] = useState([]);
   const [consumption, setConsumption] = useState([]);
-  const [cpiMode, setCpiMode] = useState("growth");
   const [refreshMsg, setRefreshMsg] = useState("");
   const [selectedEnergyYear, setSelectedEnergyYear] = useState(null);
   const [lastUpdated, setLastUpdated] = useState("");
-  const [yearRange, setYearRange] = useState([2015, 2024]);
 
   useEffect(() => {
     loadData();
@@ -105,26 +103,18 @@ export default function App() {
     }],
   } : null;
 
-  const filteredPopulation = population.filter(
-    d => d.year >= yearRange[0] && d.year <= yearRange[1]
-  );
-
   const populationChart = {
-    labels: filteredPopulation.map(d => d.year),
+    labels: population.map(d => d.year),
     datasets: [
-      { data: filteredPopulation.map(d => d.birth_rate) },
-      { data: filteredPopulation.map(d => d.death_rate) }
+      { label: "出生率 (‰)", data: population.map(d => d.birth_rate), borderColor: "#4CAF50", tension: 0.3, pointRadius: 4 },
+      { label: "死亡率 (‰)", data: population.map(d => d.death_rate), borderColor: "#f44336", tension: 0.3, pointRadius: 4 },
     ],
   };
 
-  const filteredGdp = gdp.filter(
-    d => d.year >= yearRange[0] && d.year <= yearRange[1]
-  );
-
   const gdpChart = {
-    labels: filteredGdp.map(d => d.year),
+    labels: gdp.map(d => d.year),
     datasets: [
-      { data: filteredGdp.map(d => d.gdp_growth) }
+      { label: "GDP 成長率 (%)", data: gdp.map(d => d.gdp_growth), backgroundColor: gdp.map(d => d.gdp_growth >= 0 ? "#2196F3" : "#f44336"), borderRadius: 6 },
     ],
   };
 
@@ -137,24 +127,10 @@ export default function App() {
     ],
   };
 
-  const filteredConsumption = consumption.filter(
-    d => d.year >= yearRange[0] && d.year <= yearRange[1]
-  );
-
   const cpiChart = {
-    labels: filteredConsumption.map(d => d.year),
+    labels: consumption.map(d => d.year),
     datasets: [
-      {
-        label: cpiMode === "growth" ? "CPI 年增率 (%)" : "CPI 指數",
-        data: filteredConsumption.map(d =>
-          cpiMode === "growth" ? d.cpi_growth : d.cpi
-        ),
-        borderColor: "#FF5722",
-        backgroundColor: "rgba(255,87,34,0.15)",
-        fill: true,
-        tension: 0.3,
-        pointRadius: 4,
-      },
+      { label: "CPI 年增率 (%)", data: consumption.map(d => d.cpi_growth), borderColor: "#FF5722", backgroundColor: "rgba(255,87,34,0.15)", fill: true, tension: 0.3, pointRadius: 4 },
     ],
   };
 
@@ -239,25 +215,6 @@ export default function App() {
       <div style={styles.chartRow}>
         <div style={styles.chartBox}>
           <h3 style={styles.chartTitle}>🛒 CPI 通膨率趨勢</h3>
-          <div style={{ marginBottom: "10px" }}>
-            <input
-              type="number"
-              value={yearRange[0]}
-              onChange={(e) => setYearRange([+e.target.value, yearRange[1]])}
-              style={{ width: "70px", marginRight: "5px" }}
-            />
-            -
-            <input
-              type="number"
-              value={yearRange[1]}
-              onChange={(e) => setYearRange([yearRange[0], +e.target.value])}
-              style={{ width: "70px", marginLeft: "5px" }}
-            />
-          </div>
-          <div style={{ marginBottom: "10px" }}>
-            <button onClick={() => setCpiMode("growth")}>通膨率</button>
-            <button onClick={() => setCpiMode("index")}>CPI 指數</button>
-          </div>
           <Line data={cpiChart} options={chartOpts()} />
         </div>
         <div style={styles.chartBox}>
