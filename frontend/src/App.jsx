@@ -112,18 +112,8 @@ export default function App() {
   const populationChart = {
     labels: filteredPopulation.map(d => d.year),
     datasets: [
-      {
-        label: "出生率",
-        data: filteredPopulation.map(d => d.birth_rate),
-        borderColor: "#3b82f6",
-        tension: 0.3,
-      },
-      {
-        label: "死亡率",
-        data: filteredPopulation.map(d => d.death_rate),
-        borderColor: "#ef4444",
-        tension: 0.3,
-      }
+      { data: filteredPopulation.map(d => d.birth_rate) },
+      { data: filteredPopulation.map(d => d.death_rate) }
     ],
   };
 
@@ -134,11 +124,7 @@ export default function App() {
   const gdpChart = {
     labels: filteredGdp.map(d => d.year),
     datasets: [
-      {
-        label: "GDP 成長率 (%)",
-        data: filteredGdp.map(d => d.gdp_growth),
-        backgroundColor: "#22c55e",
-      }
+      { data: filteredGdp.map(d => d.gdp_growth) }
     ],
   };
 
@@ -173,18 +159,7 @@ export default function App() {
   };
 
   const gdpPerCapitaChart = {
-  labels: filteredGdp.map(d => d.year),
-  datasets: [
-    {
-      label: "人均 GDP (USD)",
-      data: filteredGdp.map(d => d.gdp_per_capita),
-      borderColor: "#3F51B5",
-      backgroundColor: "rgba(63,81,181,0.1)",
-      fill: true,
-      tension: 0.3
-    },
-  ],
-};
+    labels: gdp.map(d => d.year),
     datasets: [
       { label: "人均 GDP (USD)", data: gdp.map(d => d.gdp_per_capita), borderColor: "#3F51B5", backgroundColor: "rgba(63,81,181,0.1)", fill: true, tension: 0.3 },
     ],
@@ -213,25 +188,6 @@ export default function App() {
         </div>
       </div>
       {refreshMsg && <div style={styles.refreshMsg}>{refreshMsg}</div>}
-      <div style={styles.globalControl}>
-        <span style={{ marginRight: "10px" }}>📅 年份範圍：</span>
-
-        <input
-          type="number"
-          value={yearRange[0]}
-          onChange={(e) => setYearRange([+e.target.value, yearRange[1]])}
-          style={styles.yearInput}
-        />
-
-        <span style={{ margin: "0 5px" }}>-</span>
-
-        <input
-          type="number"
-          value={yearRange[1]}
-          onChange={(e) => setYearRange([yearRange[0], +e.target.value])}
-          style={styles.yearInput}
-        />
-      </div>
 
       {/* KPI Cards */}
       {summary && (
@@ -284,6 +240,21 @@ export default function App() {
         <div style={styles.chartBox}>
           <h3 style={styles.chartTitle}>🛒 CPI 通膨率趨勢</h3>
           <div style={{ marginBottom: "10px" }}>
+            <input
+              type="number"
+              value={yearRange[0]}
+              onChange={(e) => setYearRange([+e.target.value, yearRange[1]])}
+              style={{ width: "70px", marginRight: "5px" }}
+            />
+            -
+            <input
+              type="number"
+              value={yearRange[1]}
+              onChange={(e) => setYearRange([yearRange[0], +e.target.value])}
+              style={{ width: "70px", marginLeft: "5px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "10px" }}>
             <button onClick={() => setCpiMode("growth")}>通膨率</button>
             <button onClick={() => setCpiMode("index")}>CPI 指數</button>
           </div>
@@ -325,22 +296,4 @@ const styles = {
   yearBtnActive: { background: "#3b82f6", color: "#fff" },
   donutNote: { textAlign: "center", color: "#94a3b8", fontSize: "11px", marginTop: "8px" },
   footer: { textAlign: "center", color: "#475569", fontSize: "12px", marginTop: "24px" },
-  globalControl: {
-  background: "#1e293b",
-  padding: "12px 16px",
-  borderRadius: "10px",
-  marginBottom: "20px",
-  display: "flex",
-  alignItems: "center",
-  fontSize: "14px"
-},
-yearInput: {
-  width: "80px",
-  padding: "4px 8px",
-  borderRadius: "6px",
-  border: "none",
-  background: "#334155",
-  color: "#e2e8f0",
-  textAlign: "center"
-},
 };
