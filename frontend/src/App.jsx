@@ -54,9 +54,11 @@ export default function App() {
   const [gdp, setGdp] = useState([]);
   const [energy, setEnergy] = useState([]);
   const [consumption, setConsumption] = useState([]);
+  const [cpiMode, setCpiMode] = useState("growth");
   const [refreshMsg, setRefreshMsg] = useState("");
   const [selectedEnergyYear, setSelectedEnergyYear] = useState(null);
   const [lastUpdated, setLastUpdated] = useState("");
+  const [yearRange, setYearRange] = useState([2015, 2024]);
 
   useEffect(() => {
     loadData();
@@ -127,10 +129,24 @@ export default function App() {
     ],
   };
 
+  const filteredConsumption = consumption.filter(
+    d => d.year >= yearRange[0] && d.year <= yearRange[1]
+  );
+
   const cpiChart = {
-    labels: consumption.map(d => d.year),
+    labels: filteredConsumption.map(d => d.year),
     datasets: [
-      { label: "CPI 年增率 (%)", data: consumption.map(d => d.cpi_growth), borderColor: "#FF5722", backgroundColor: "rgba(255,87,34,0.15)", fill: true, tension: 0.3, pointRadius: 4 },
+      {
+        label: cpiMode === "growth" ? "CPI 年增率 (%)" : "CPI 指數",
+        data: filteredConsumption.map(d =>
+          cpiMode === "growth" ? d.cpi_growth : d.cpi
+        ),
+        borderColor: "#FF5722",
+        backgroundColor: "rgba(255,87,34,0.15)",
+        fill: true,
+        tension: 0.3,
+        pointRadius: 4,
+      },
     ],
   };
 
@@ -215,6 +231,25 @@ export default function App() {
       <div style={styles.chartRow}>
         <div style={styles.chartBox}>
           <h3 style={styles.chartTitle}>🛒 CPI 通膨率趨勢</h3>
+          <div style={{ marginBottom: "10px" }}>
+            <input
+              type="number"
+              value={yearRange[0]}
+              onChange={(e) => setYearRange([+e.target.value, yearRange[1]])}
+              style={{ width: "70px", marginRight: "5px" }}
+            />
+            -
+            <input
+              type="number"
+              value={yearRange[1]}
+              onChange={(e) => setYearRange([yearRange[0], +e.target.value])}
+              style={{ width: "70px", marginLeft: "5px" }}
+            />
+          </div>
+          <div style={{ marginBottom: "10px" }}>
+            <button onClick={() => setCpiMode("growth")}>通膨率</button>
+            <button onClick={() => setCpiMode("index")}>CPI 指數</button>
+          </div>
           <Line data={cpiChart} options={chartOpts()} />
         </div>
         <div style={styles.chartBox}>
