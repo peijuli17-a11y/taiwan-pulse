@@ -105,18 +105,26 @@ export default function App() {
     }],
   } : null;
 
+  const filteredPopulation = population.filter(
+    d => d.year >= yearRange[0] && d.year <= yearRange[1]
+  );
+
   const populationChart = {
-    labels: population.map(d => d.year),
+    labels: filteredPopulation.map(d => d.year),
     datasets: [
-      { label: "出生率 (‰)", data: population.map(d => d.birth_rate), borderColor: "#4CAF50", tension: 0.3, pointRadius: 4 },
-      { label: "死亡率 (‰)", data: population.map(d => d.death_rate), borderColor: "#f44336", tension: 0.3, pointRadius: 4 },
+      { data: filteredPopulation.map(d => d.birth_rate) },
+      { data: filteredPopulation.map(d => d.death_rate) }
     ],
   };
 
+  const filteredGdp = gdp.filter(
+    d => d.year >= yearRange[0] && d.year <= yearRange[1]
+  );
+
   const gdpChart = {
-    labels: gdp.map(d => d.year),
+    labels: filteredGdp.map(d => d.year),
     datasets: [
-      { label: "GDP 成長率 (%)", data: gdp.map(d => d.gdp_growth), backgroundColor: gdp.map(d => d.gdp_growth >= 0 ? "#2196F3" : "#f44336"), borderRadius: 6 },
+      { data: filteredGdp.map(d => d.gdp_growth) }
     ],
   };
 
