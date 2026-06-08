@@ -134,13 +134,21 @@ export default function App() {
   );
 
   const cpiChart = {
-    labels: consumption.map(d => d.year),
-    datasets: [
-      {
-        label: cpiMode === "growth" ? "CPI 年增率 (%)" : "CPI 指數",
-        data: consumption.map(d =>
-          cpiMode === "growth" ? d.cpi_growth : d.cpi
-        ),
+  labels: filteredConsumption.map(d => d.year),
+  datasets: [
+    {
+      label: cpiMode === "growth" ? "CPI 年增率 (%)" : "CPI 指數",
+      data: filteredConsumption.map(d =>
+        cpiMode === "growth" ? d.cpi_growth : d.cpi
+      ),
+      borderColor: "#FF5722",
+      backgroundColor: "rgba(255,87,34,0.15)",
+      fill: true,
+      tension: 0.3,
+      pointRadius: 4,
+    },
+  ],
+};
         borderColor: "#FF5722",
         backgroundColor: "rgba(255,87,34,0.15)",
         fill: true,
